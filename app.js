@@ -4,7 +4,7 @@ const hostname = '127.0.0.1';
 const port = 3000;
 const arpScanner = require('arpscan');
 
-arpScanner(onResult, options);
+arpScanner(onResult);
 
 function onResult(err, data){
     if(err) throw err;
