@@ -18,33 +18,31 @@ var connection = mysql.createConnection({
 function dbconnect(callback, query) {
     connection.query(query,
         function(err,row){
-        if (err) {
-            throw err;
-        }
-        return callback(err, row);
-    });
+            if (err) {
+                throw err;
+            }
+            return callback(err, row);
+        });
 }
-
-
-dbconnect(function(err, result){
-    if (err) throw err;
-    else {
-        console.log(result);
-        db = result;
-    }
-    return;
-}, 'SELECT * FROM macs');
 
 arpScanner(onResult);
 
 function onResult(err, data){
     if(err) throw err;
-
-    arp = data;
+    if(data.length > 0) {
+        data.forEach((item) => {
+            dbconnect(function (err, result) {
+                if (err) throw err;
+                else {
+                    console.log(result);
+                    db = result;
+                }
+                return;
+            }, 'INSERT INTO macs (MAC, flag) VALUES(' + mysql.escape(item.mac) + ', 0)');
+    });
+    }
 }
 
-console.log(db);
-console.log(arp);
 const server = http.createServer((req, res) => {
     res.statusCode = 200;
 });
